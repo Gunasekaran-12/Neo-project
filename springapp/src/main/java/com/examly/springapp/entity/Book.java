@@ -38,10 +38,28 @@ public class Book {
 
     // Getters and Setters
 
-    public int getId(){
+    public Long getId(){ 
         return id;
     }
-    public void setId(int id){
-        this.id = id
+    public void setId(Long id){
+        this.id = id;
+    }
+    public String getTitle(){
+        return title;
+    }
+    public void setTitle(String title){
+        this.title = title;
+    }
+    public String getAuhtor(){
+        return author;
+    }
+    public void setAuthor(String author){
+        this.author = author;
+    }
+    public String getISBN(){
+        return isbn;
+    }
+    public void setISBN(String isbn){
+        this.isbn = isbn;
     }
 }
