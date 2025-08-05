@@ -1,9 +1,7 @@
 package com.examly.springapp.entity;
+
 import jakarta.persistence.*;
 import java.time.LocalDate;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 
 @Entity
 public class BorrowRecord {
@@ -24,6 +22,16 @@ public class BorrowRecord {
     private LocalDate dueDate;
     private boolean returned;
 
+    // Constructors
+    public BorrowRecord() {}
+
+    public BorrowRecord(Book book, Borrower borrower, LocalDate borrowDate) {
+        this.book = book;
+        this.borrower = borrower;
+        this.borrowDate = borrowDate;
+        this.returned = false;
+    }
+
     // Getters and Setters
     public Long getId() {
         return id;
@@ -37,8 +45,8 @@ public class BorrowRecord {
         return book;
     }
 
-    public void setBook(Book bookId) {
-        this.book = bookId;
+    public void setBook(Book book) {
+        this.book = book;
     }
 
     public Borrower getBorrower() {
@@ -63,6 +71,7 @@ public class BorrowRecord {
 
     public void setReturnDate(LocalDate returnDate) {
         this.returnDate = returnDate;
+        this.returned = (returnDate != null);
     }
 
     public LocalDate getDueDate() {
@@ -79,9 +88,5 @@ public class BorrowRecord {
 
     public void setReturned(boolean returned) {
         this.returned = returned;
-    }
-
-    public void setBook(Long bookId) {
-        throw new UnsupportedOperationException("Unimplemented method 'setBook'");
     }
 }
