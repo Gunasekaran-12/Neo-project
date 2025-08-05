@@ -1,41 +1,36 @@
 package com.examly.springapp.controller;
 
-import com.examly.springapp.entity.Borrower;
-import com.examly.springapp.service.BorrowerService;
+import com.examly.springapp.entity.BorrowRecord;
+import com.examly.springapp.service.BorrowService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/borrowers")
-public class BorrowerController {
+@RequestMapping("/api/borrows")
+public class BorrowController {
 
     @Autowired
-    private BorrowerService borrowerService;
+    private BorrowService borrowService;
 
-    @GetMapping
-    public List<Borrower> getAllBorrowers() {
-        return borrowerService.getAllBorrowers();
+    @PostMapping("/borrow")
+    public BorrowRecord borrowBook(@RequestParam Long bookId, @RequestParam Long borrowerId) {
+        return borrowService.borrowBook(bookId, borrowerId);
     }
 
-    @GetMapping("/{id}")
-    public Borrower getBorrower(@PathVariable Long id) {
-        return borrowerService.getBorrowerById(id);
+    @PostMapping("/return/{borrowId}")
+    public BorrowRecord returnBook(@PathVariable Long borrowId) {
+        return borrowService.returnBook(borrowId);
     }
 
-    @PostMapping
-    public Borrower addBorrower(@RequestBody Borrower borrower) {
-        return borrowerService.addBorrower(borrower);
+    @GetMapping("/borrower/{borrowerId}")
+    public List<BorrowRecord> getBorrowByBorrower(@PathVariable Long borrowerId) {
+        return borrowService.getBorrowByBorrower(borrowerId);
     }
 
-    @PutMapping("/{id}")
-    public Borrower updateBorrower(@PathVariable Long id, @RequestBody Borrower borrower) {
-        return borrowerService.updateBorrower(id, borrower);
-    }
-
-    @DeleteMapping("/{id}")
-    public void deleteBorrower(@PathVariable Long id) {
-        borrowerService.deleteBorrower(id);
+    @GetMapping("/book/{bookId}")
+    public List<BorrowRecord> getBorrowByBook(@PathVariable Long bookId) {
+        return borrowService.getBorrowByBook(bookId);
     }
 }
