@@ -2,29 +2,28 @@ package com.examly.springapp.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
-@Table(name = "borrowers", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
 public class Borrower {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotBlank(message = "Name is required")
-    @Size(max = 50, message = "Name must be under 50 characters")
     private String name;
 
     @NotBlank(message = "Email is required")
-    @Email(message = "Email must be valid")
+    @Email(message = "Email should be valid")
     private String email;
 
     @NotBlank(message = "Phone number is required")
-    @Pattern(regexp = "\\d{10}", message = "Phone number must be 10 digits")
-    private String phoneNumber;
+    private String phone;
 
-    // === Getters & Setters ===
-
+    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -49,11 +48,11 @@ public class Borrower {
         this.email = email;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }
