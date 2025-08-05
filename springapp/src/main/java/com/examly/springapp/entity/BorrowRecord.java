@@ -1,5 +1,4 @@
 package com.examly.springapp.entity;
-
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import jakarta.persistence.Entity;

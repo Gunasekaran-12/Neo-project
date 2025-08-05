@@ -1,10 +1,7 @@
 package com.examly.springapp.entity;
-
 import java.util.function.BooleanSupplier;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-
 import jakarta.persistence.GeneratedValue;
 
 @Entity

@@ -26,8 +26,8 @@ public class BorrowRecordService {
         }
         
         BorrowRecord record = new BorrowRecord();
-        record.setBook(bookId);  // Changed from setBook to setBookId
-        record.setId(userId);  // Changed from setId to setUserId
+        record.setBookId(bookId);  // Changed from setBook to setBookId
+        record.setUserId(userId);  // Changed from setId to setUserId
         record.setBorrowDate(LocalDate.now());
         return borrowRepo.save(record);
     }
