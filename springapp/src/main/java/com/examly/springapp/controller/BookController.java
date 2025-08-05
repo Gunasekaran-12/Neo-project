@@ -1,12 +1,11 @@
 package com.examly.springapp.controller;
 
 import com.examly.springapp.entity.Book;
+import com.examly.springapp.exception.BusinessValidationException;
 import com.examly.springapp.service.BookService;
 
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -21,14 +20,20 @@ public class BookController {
     private BookService bookService;
 
     @PostMapping
-    public ResponseEntity<Book> addBook(@Valid @RequestBody Book book) {
-        Book savedBook = bookService.addBook(book);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedBook);
+    public ResponseEntity<?> addBook(@Valid @RequestBody Book book) {
+        try {
+            Book savedBook = bookService.addBook(book);
+            return ResponseEntity.ok(savedBook);
+        } catch (BusinessValidationException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Book>> getBook(@PathVariable Long id) {
-        Optional<Book> book = bookService.getBookById(id);
-        return ResponseEntity.ok(book);
+    public ResponseEntity<?> getBook(@PathVariable Long id) {
+        return bookService.getBookById(id)
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
     }
+
 }

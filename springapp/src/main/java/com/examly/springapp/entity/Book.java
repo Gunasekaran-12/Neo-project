@@ -9,23 +9,20 @@ import jakarta.persistence.GeneratedValue;
 
 @Entity
 public class Book {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    
     @NotBlank(message = "Title is required")
     private String title;
-
+    
     @NotBlank(message = "Author is required")
     private String author;
-
+    
     @NotBlank(message = "ISBN is required")
-    @Size(min = 13, max = 13, message = "ISBN must be exactly 13 characters")
+    @Size(min = 10, max = 13, message = "ISBN must be 10-13 characters")
     private String isbn;
-
+    
     @NotNull(message = "Publication year is required")
-    @Min(value = 1000, message = "Publication year must be after 1000")
-    @Max(value = 2100, message = "Publication year must be before 2100")
     private Integer publicationYear;
 
     // Getters and Setters
@@ -70,12 +67,10 @@ public class Book {
     }
 
     public void setAvailable(boolean b) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'setAvailable'");
     }
 
     public BooleanSupplier getAvailable() {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getAvailable'");
     }
 }
