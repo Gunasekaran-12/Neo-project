@@ -19,7 +19,7 @@ public class Book {
     private String author;
 
     @NotBlank(message = "ISBN is required")
-    @Pattern(regexp = "\d{10,13}", message = "ISBN must be 10-13 digits")
+    @Pattern(regexp = "\\d{10,13}", message = "ISBN must be 10-13 digits")
     private String isbn;
 
     @NotNull(message = "Publication year is required")
@@ -76,8 +76,7 @@ public class Book {
         throw new UnsupportedOperationException("Unimplemented method 'getAvailable'");
     }
 
-    public void setReturnDate(LocalDate now) {
-        // TODO Auto-generated method stub
+    public void setReturnDate(boolean now) {
         throw new UnsupportedOperationException("Unimplemented method 'setReturnDate'");
     }
 }
