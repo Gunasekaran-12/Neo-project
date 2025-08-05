@@ -24,7 +24,7 @@ public class BorrowRecordRepository {
         throw new UnsupportedOperationException("Unimplemented method 'findFirstByBookAndReturnDateIsNullOrderByBorrowDateDesc'");
     }
 
-    public BorrowRecord save(Book activeRecord) {
+    public BorrowRecord save(BorrowRecord borrowRecord) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'save'");
     }

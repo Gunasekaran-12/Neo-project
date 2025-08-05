@@ -1,4 +1,4 @@
-Could not pastepackage com.examly.springapp.service;
+package com.examly.springapp.service;
 
 import com.examly.springapp.entity.Book;
 import com.examly.springapp.entity.BorrowRecord;
