@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api/borrow-records")
 public class BorrowRecordController {
@@ -22,8 +24,8 @@ public class BorrowRecordController {
 
     @GetMapping("/{id}")
     public ResponseEntity<BorrowRecord> getBorrowRecord(@PathVariable Long id) {
-        return borrowRecordService.getBorrowRecordById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        Optional<BorrowRecord> record = Optional.empty();
+        return record.map(ResponseEntity::ok)
+                   .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

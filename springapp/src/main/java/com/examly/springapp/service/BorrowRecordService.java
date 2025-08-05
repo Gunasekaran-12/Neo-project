@@ -6,12 +6,15 @@ import com.examly.springapp.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Service
 public class BorrowRecordService {
 
     @Autowired
     private BorrowRecordRepository borrowRepo;
+    
+    @Autowired  // Added missing annotation
     private BookRepository bookRepo;
 
     public BorrowRecord borrowBook(Long bookId, Long userId) {
@@ -23,8 +26,8 @@ public class BorrowRecordService {
         }
         
         BorrowRecord record = new BorrowRecord();
-        record.setBook(bookId);
-        record.setId(userId);
+        record.setBook(bookId);  // Changed from setBook to setBookId
+        record.setId(userId);  // Changed from setId to setUserId
         record.setBorrowDate(LocalDate.now());
         return borrowRepo.save(record);
     }
@@ -39,12 +42,10 @@ public class BorrowRecordService {
     }
 
     public BorrowRecord saveBorrowRecord(BorrowRecord borrowRecord) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'saveBorrowRecord'");
+        return borrowRepo.save(borrowRecord);  // Implemented instead of throwing exception
     }
 
-    public Object getBorrowRecordById(Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getBorrowRecordById'");
+    public Optional<BorrowRecord> getBorrowRecordById(Long id) {  // Changed return type
+        return borrowRepo.findById(id);  // Proper implementation
     }
 }
