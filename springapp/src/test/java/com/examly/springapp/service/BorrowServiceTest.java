@@ -4,7 +4,6 @@ import com.examly.springapp.entity.Book;
 import com.examly.springapp.entity.BorrowRecord;
 import com.examly.springapp.entity.Borrower;
 import com.examly.springapp.exception.BusinessValidationException;
-import com.examly.springapp.exception.ResourceNotFoundException;
 import com.examly.springapp.repository.BookRepository;
 import com.examly.springapp.repository.BorrowRecordRepository;
 import com.examly.springapp.repository.BorrowerRepository;

@@ -1,5 +1,7 @@
 package com.examly.springapp.entity;
 
+import java.util.function.BooleanSupplier;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
@@ -65,5 +67,15 @@ public class Book {
 
     public void setPublicationYear(Integer publicationYear) {
         this.publicationYear = publicationYear;
+    }
+
+    public void setAvailable(boolean b) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setAvailable'");
+    }
+
+    public BooleanSupplier getAvailable() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getAvailable'");
     }
 }

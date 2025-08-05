@@ -22,7 +22,7 @@ public class BookController {
 
     @PostMapping
     public ResponseEntity<Book> addBook(@Valid @RequestBody Book book) {
-        Book savedBook = bookService.saveBook(book);
+        Book savedBook = bookService.addBook(book);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedBook);
     }
 
