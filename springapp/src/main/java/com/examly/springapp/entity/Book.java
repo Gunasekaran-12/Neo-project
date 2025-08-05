@@ -1,4 +1,5 @@
 package com.examly.springapp.entity;
+import java.time.LocalDate;
 import java.util.function.BooleanSupplier;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -18,7 +19,7 @@ public class Book {
     private String author;
 
     @NotBlank(message = "ISBN is required")
-    @Pattern(regexp = "\\d{10,13}", message = "ISBN must be 10-13 digits")
+    @Pattern(regexp = "\d{10,13}", message = "ISBN must be 10-13 digits")
     private String isbn;
 
     @NotNull(message = "Publication year is required")
@@ -73,5 +74,10 @@ public class Book {
 
     public BooleanSupplier getAvailable() {
         throw new UnsupportedOperationException("Unimplemented method 'getAvailable'");
+    }
+
+    public void setReturnDate(LocalDate now) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setReturnDate'");
     }
 }
