@@ -38,8 +38,8 @@ public class BorrowRecord {
         return book;
     }
 
-    public void setBook(Book book) {
-        this.book = book;
+    public void setBook(Long bookId) {
+        this.book = bookId;
     }
 
     public Borrower getBorrower() {
@@ -80,5 +80,10 @@ public class BorrowRecord {
 
     public void setReturned(boolean returned) {
         this.returned = returned;
+    }
+
+    public void setBook(Long bookId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setBook'");
     }
 }

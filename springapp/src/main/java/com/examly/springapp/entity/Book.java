@@ -13,16 +13,20 @@ public class Book {
     private Long id;
     
     @NotBlank(message = "Title is required")
+    @Size(max = 100, message = "Title must be less than 100 characters")
     private String title;
-    
+
     @NotBlank(message = "Author is required")
+    @Size(max = 50, message = "Author name must be less than 50 characters")
     private String author;
-    
+
     @NotBlank(message = "ISBN is required")
-    @Size(min = 10, max = 13, message = "ISBN must be 10-13 characters")
+    @Pattern(regexp = "\\d{10,13}", message = "ISBN must be 10-13 digits")
     private String isbn;
-    
+
     @NotNull(message = "Publication year is required")
+    @Min(value = 1800, message = "Publication year must be after 1800")
+    @Max(value = 2023, message = "Publication year must not be in the future")
     private Integer publicationYear;
 
     // Getters and Setters
