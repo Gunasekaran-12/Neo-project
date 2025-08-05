@@ -25,7 +25,7 @@ class BorrowServiceTest {
     @Mock
     private BorrowRecordRepository borrowRecordRepository;
     @InjectMocks
-    private BorrowRecordService borrowService;
+    private BorrowService borrowService;
     @BeforeEach
     void setUp() { MockitoAnnotations.openMocks(this); }
 
