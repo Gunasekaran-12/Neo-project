@@ -30,12 +30,7 @@ public class BorrowRecordService {
 
     @Transactional
     public BorrowRecord saveBorrowRecord(BorrowRecord borrowRecord) {
-        if (borrowRecord.getBook() == null) {
-            throw new BusinessValidationException("Book must be specified");
-        }
-        if (borrowRecord.getBorrower() == null) {
-            throw new BusinessValidationException("Borrower must be specified");
-        }
+        validateBorrowRecord(borrowRecord);
         return borrowRepo.save(borrowRecord);
     }
 
@@ -51,27 +46,16 @@ public class BorrowRecordService {
             throw new BusinessValidationException("Book is already borrowed");
         }
 
-        BorrowRecord newRecord = new BorrowRecord();
-        newRecord.setBook(book);
-        newRecord.setBorrower(borrower);
-        newRecord.setBorrowDate(LocalDate.now());
-        newRecord.setDueDate(LocalDate.now().plusWeeks(2));
-        newRecord.setReturned(false);
-        
+        BorrowRecord newRecord = createNewBorrowRecord(book, borrower);
         return borrowRepo.save(newRecord);
     }
-
-    @Transactional
+@Transactional
     public BorrowRecord returnBook(Long bookId) {
         Book book = bookRepo.findById(bookId)
             .orElseThrow(() -> new ResourceNotFoundException("Book not found with id: " + bookId));
 
-        Book activeRecord = borrowRepo
-            .findFirstByBookAndReturnDateIsNullOrderByBorrowDateDesc(book)
-            .orElseThrow(() -> new BusinessValidationException("No active borrow record for this book"));
-        
-        activeRecord.setReturnDate(LocalDate.now());
-        activeRecord.setReturnDate(true);
+        BorrowRecord activeRecord = findActiveBorrowRecord(book);
+        markRecordAsReturned(activeRecord);
         
         return borrowRepo.save(activeRecord);
     }
@@ -86,7 +70,37 @@ public class BorrowRecordService {
         return borrowRepo.findByBorrower(borrower);
     }
 
+    // Helper methods
     private boolean isBookCurrentlyBorrowed(Book book) {
         return borrowRepo.existsByBookAndReturnDateIsNull(book);
+    }
+
+    private BorrowRecord findActiveBorrowRecord(Book book) {
+        return borrowRepo.findFirstByBookAndReturnDateIsNullOrderByBorrowDateDesc(book)
+            .orElseThrow(() -> new BusinessValidationException("No active borrow record for this book"));
+    }
+
+    private void markRecordAsReturned(BorrowRecord record) {
+        record.setReturnDate(LocalDate.now());
+        record.setReturned(true);
+    }
+
+    private BorrowRecord createNewBorrowRecord(Book book, Borrower borrower) {
+        BorrowRecord record = new BorrowRecord();
+        record.setBook(book);
+        record.setBorrower(borrower);
+        record.setBorrowDate(LocalDate.now());
+        record.setDueDate(LocalDate.now().plusWeeks(2));
+        record.setReturned(false);
+        return record;
+    }
+
+    private void validateBorrowRecord(BorrowRecord borrowRecord) {
+        if (borrowRecord.getBook() == null) {
+            throw new BusinessValidationException("Book must be specified");
+        }
+        if (borrowRecord.getBorrower() == null) {
+            throw new BusinessValidationException("Borrower must be specified");
+        }
     }
 }

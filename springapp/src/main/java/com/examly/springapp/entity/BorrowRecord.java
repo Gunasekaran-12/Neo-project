@@ -71,7 +71,6 @@ public class BorrowRecord {
 
     public void setReturnDate(LocalDate returnDate) {
         this.returnDate = returnDate;
-        this.returned = (returnDate != null);
     }
 
     public LocalDate getDueDate() {
