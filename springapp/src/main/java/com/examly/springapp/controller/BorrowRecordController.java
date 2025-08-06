@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -26,13 +25,13 @@ public class BorrowRecordController {
     public ResponseEntity<BorrowRecord> borrowBook(
             @RequestParam Long bookId,
             @RequestParam Long borrowerId) {
-        BorrowRecord newBorrowRecord = borrowRecordService.borrowBook(bookId, borrowerId);
+        BorrowRecord newBorrowRecord = (BorrowRecord) borrowRecordService.borrowBook(bookId, borrowerId);
         return ResponseEntity.status(HttpStatus.CREATED).body(newBorrowRecord);
     }
 
     @PostMapping("/return/{bookId}")
     public ResponseEntity<BorrowRecord> returnBook(@PathVariable Long bookId) {
-        BorrowRecord returnedRecord = borrowRecordService.returnBook(bookId);
+        BorrowRecord returnedRecord = (BorrowRecord) borrowRecordService.returnBook(bookId);
         return ResponseEntity.ok(returnedRecord);
     }
 
@@ -44,9 +43,9 @@ public class BorrowRecordController {
     }
 
     @GetMapping("/borrower/{borrowerId}")
-    public ResponseEntity<List<BorrowRecord>> getBorrowRecordsByBorrower(
+    public ResponseEntity<Optional<BorrowRecord>> getBorrowRecordsByBorrower(
             @PathVariable Long borrowerId) {
-        List<BorrowRecord> borrowRecords = borrowRecordService.getBorrowRecordsByBorrower(borrowerId);
+        Optional<BorrowRecord> borrowRecords = borrowRecordService.getBorrowRecordById(borrowerId);
         return ResponseEntity.ok(borrowRecords);
     }
 }
