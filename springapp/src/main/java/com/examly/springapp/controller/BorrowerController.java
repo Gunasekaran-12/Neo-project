@@ -1,7 +1,7 @@
 package com.examly.springapp.controller;
 
 import com.examly.springapp.entity.BorrowRecord;
-import com.examly.springapp.service.BorrowRecordService;
+import com.examly.springapp.service.BorrowService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,10 +10,10 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/borrow-records")
-public class BorrowRecordController {
+public class BorrowerController {
 
     @Autowired
-    private BorrowRecordService borrowRecordService;
+    private BorrowService borrowRecordService;
 
     @PostMapping
     public ResponseEntity<BorrowRecord> createBorrowRecord(@RequestBody BorrowRecord borrowRecord) {

@@ -1,6 +1,7 @@
 package com.examly.springapp.controller;
 
-import com.examly.springapp.service.BorrowRecordService;
+import com.examly.springapp.entity.BorrowRecord;
+import com.examly.springapp.service.BorrowService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,25 +10,15 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/borrow")
 public class BorrowController {
     @Autowired
-    private BorrowRecordService borrowService;
+    private BorrowService borrowService;
 
-    @PostMapping("/{bookId}/user/{userId}")
-    public ResponseEntity<?> borrowBook(
-            @PathVariable Long bookId,
-            @PathVariable Long userId) {
-        try {
-            return ResponseEntity.ok(borrowService.borrowBook(bookId, userId));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+   @PostMapping("/borrow/{bookId}/{borrowerId}")
+    public ResponseEntity<Object> borrowBook(@PathVariable Long bookId, @PathVariable Long borrowerId) {
+        return ResponseEntity.ok(borrowService.borrowBook(bookId, borrowerId));
     }
-
-    @PostMapping("/return/{bookId}")
-    public ResponseEntity<?> returnBook(@PathVariable Long bookId) {
-        try {
-            return ResponseEntity.ok(borrowService.returnBook(bookId));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    
+    @PostMapping("/return/{recordId}")
+    public ResponseEntity<Object> returnBook(@PathVariable Long recordId) {
+        return ResponseEntity.ok(borrowService.returnBook(recordId));
     }
 }

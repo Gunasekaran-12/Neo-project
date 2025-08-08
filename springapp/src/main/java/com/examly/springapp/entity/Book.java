@@ -1,32 +1,30 @@
 package com.examly.springapp.entity;
-import java.util.function.BooleanSupplier;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import jakarta.persistence.GeneratedValue;
 
 @Entity
 public class Book {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    @NotBlank(message = "Title is required")
-    @Size(max = 100, message = "Title must be less than 100 characters")
+
+    @NotBlank(message = "Title is mandatory")
     private String title;
 
-    @NotBlank(message = "Author is required")
-    @Size(max = 50, message = "Author name must be less than 50 characters")
+    @NotBlank(message = "Author is mandatory")
     private String author;
 
-    @NotBlank(message = "ISBN is required")
-    @Pattern(regexp = "\\d{10,13}", message = "ISBN must be 10-13 digits")
+    @NotBlank(message = "ISBN is mandatory")
+    @Size(min = 13, max = 13, message = "ISBN must be 13 digits")
     private String isbn;
 
-    @NotNull(message = "Publication year is required")
-    @Min(value = 1800, message = "Publication year must be after 1800")
-    @Max(value = 2023, message = "Publication year must not be in the future")
-    private Integer publicationYear;
+    @Min(value = 1000, message = "Publication year must be a 4-digit number")
+    private int publicationYear;
 
-    // Getters and Setters
+    private boolean available = true;
+
     public Long getId() {
         return id;
     }
@@ -59,23 +57,23 @@ public class Book {
         this.isbn = isbn;
     }
 
-    public Integer getPublicationYear() {
+    public int getPublicationYear() {
         return publicationYear;
     }
 
-    public void setPublicationYear(Integer publicationYear) {
+    public void setPublicationYear(int publicationYear) {
         this.publicationYear = publicationYear;
     }
 
-    public void setAvailable(boolean b) {
-        throw new UnsupportedOperationException("Unimplemented method 'setAvailable'");
+    public boolean isAvailable() {
+        return available;
     }
 
-    public BooleanSupplier getAvailable() {
-        throw new UnsupportedOperationException("Unimplemented method 'getAvailable'");
+    public void setAvailable(boolean available) {
+        this.available = available;
     }
 
-    public void setReturnDate(boolean now) {
-        throw new UnsupportedOperationException("Unimplemented method 'setReturnDate'");
-    }
+    // Getters and Setters
+    
+
 }
