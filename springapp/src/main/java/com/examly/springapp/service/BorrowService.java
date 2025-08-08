@@ -9,16 +9,10 @@ import java.time.LocalDate;
 
 @Service
 public class BorrowService {
+    
+    // Other fields and annotations...
 
-    @Autowired 
-    private BookRepository bookRepository;
-
-    @Autowired 
-    private BorrowerRepository borrowerRepository;
-
-    @Autowired 
-    private BorrowRecordRepository borrowRecordRepository;
-
+    // 1) borrowBook method - implemented fully here
     public BorrowRecord borrowBook(Long bookId, Long borrowerId) {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new ResourceNotFoundException("Book not found"));
@@ -35,10 +29,12 @@ public class BorrowService {
 
         BorrowRecord record = new BorrowRecord(book, borrower, LocalDate.now());
         record.setDueDate(LocalDate.now().plusDays(14));
+        record.setReturned(false);
 
         return borrowRecordRepository.save(record);
     }
 
+    // 2) returnBook method - implemented fully here
     public BorrowRecord returnBook(Long recordId) {
         BorrowRecord record = borrowRecordRepository.findById(recordId)
                 .orElseThrow(() -> new ResourceNotFoundException("Borrow record not found"));
@@ -57,6 +53,7 @@ public class BorrowService {
         return borrowRecordRepository.save(record);
     }
 
+    // 3) getBorrowRecord method - implemented fully here
     public BorrowRecord getBorrowRecord(Long id) {
         return borrowRecordRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Borrow record not found"));
