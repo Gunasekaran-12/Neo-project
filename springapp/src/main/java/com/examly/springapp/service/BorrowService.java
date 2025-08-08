@@ -5,22 +5,26 @@ import com.examly.springapp.exception.*;
 import com.examly.springapp.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.examly.springapp.entity.Book;
-import com.examly.springapp.repository.BookRepository;
 import java.time.LocalDate;
 
 @Service
 public class BorrowService {
 
-    @Autowired private BookRepository bookRepository;
-    @Autowired private BorrowerRepository borrowerRepository;
-    @Autowired private BorrowRecordRepository borrowRecordRepository;
+    @Autowired 
+    private BookRepository bookRepository;
+
+    @Autowired 
+    private BorrowerRepository borrowerRepository;
+
+    @Autowired 
+    private BorrowRecordRepository borrowRecordRepository;
 
     public BorrowRecord borrowBook(Long bookId, Long borrowerId) {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new ResourceNotFoundException("Book not found"));
+
         if (!book.isAvailable()) {
-            throw new BusinessValidationException("Book is not available");
+            throw new BusinessValidationException("Book is not available for borrowing");
         }
 
         Borrower borrower = borrowerRepository.findById(borrowerId)
@@ -31,6 +35,7 @@ public class BorrowService {
 
         BorrowRecord record = new BorrowRecord(book, borrower, LocalDate.now());
         record.setDueDate(LocalDate.now().plusDays(14));
+
         return borrowRecordRepository.save(record);
     }
 
@@ -41,6 +46,7 @@ public class BorrowService {
         if (record.isReturned()) {
             throw new BusinessValidationException("Book already returned");
         }
+
         record.setReturnDate(LocalDate.now());
         record.setReturned(true);
 

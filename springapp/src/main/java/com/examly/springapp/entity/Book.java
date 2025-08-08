@@ -42,7 +42,7 @@ public class Book {
     public void setPublicationYear(int publicationYear) { this.publicationYear = publicationYear; }
 
     public boolean isAvailable() { return available; }
+    public boolean getAvailable() { return available; }
 
     public void setAvailable(boolean available) { this.available = available; }
-    public boolean getAvailable() { return available; }
 }
