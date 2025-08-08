@@ -9,20 +9,17 @@ public class BorrowRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "book_id", nullable = false)
+    @ManyToOne @JoinColumn(name = "book_id", nullable = false)
     private Book book;
 
-    @ManyToOne
-    @JoinColumn(name = "borrower_id", nullable = false)
+    @ManyToOne @JoinColumn(name = "borrower_id", nullable = false)
     private Borrower borrower;
 
     private LocalDate borrowDate;
-    private LocalDate returnDate;
     private LocalDate dueDate;
+    private LocalDate returnDate;
     private boolean returned;
 
-    // Constructors
     public BorrowRecord() {}
 
     public BorrowRecord(Book book, Borrower borrower, LocalDate borrowDate) {
@@ -32,7 +29,6 @@ public class BorrowRecord {
         this.returned = false;
     }
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -65,20 +61,20 @@ public class BorrowRecord {
         this.borrowDate = borrowDate;
     }
 
-    public LocalDate getReturnDate() {
-        return returnDate;
-    }
-
-    public void setReturnDate(LocalDate returnDate) {
-        this.returnDate = returnDate;
-    }
-
     public LocalDate getDueDate() {
         return dueDate;
     }
 
     public void setDueDate(LocalDate dueDate) {
         this.dueDate = dueDate;
+    }
+
+    public LocalDate getReturnDate() {
+        return returnDate;
+    }
+
+    public void setReturnDate(LocalDate returnDate) {
+        this.returnDate = returnDate;
     }
 
     public boolean isReturned() {
@@ -88,4 +84,7 @@ public class BorrowRecord {
     public void setReturned(boolean returned) {
         this.returned = returned;
     }
+
+    // Getters and Setters...
+    
 }
