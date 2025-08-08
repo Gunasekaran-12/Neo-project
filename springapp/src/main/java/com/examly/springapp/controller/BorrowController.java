@@ -1,6 +1,4 @@
 package com.examly.springapp.controller;
-
-import com.examly.springapp.entity.BorrowRecord;
 import com.examly.springapp.service.BorrowService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +10,7 @@ public class BorrowController {
     @Autowired
     private BorrowService borrowService;
 
-   @PostMapping("/borrow/{bookId}/{borrowerId}")
+   @PostMapping("/{bookId}/{borrowerId}")
     public ResponseEntity<Object> borrowBook(@PathVariable Long bookId, @PathVariable Long borrowerId) {
         return ResponseEntity.ok(borrowService.borrowBook(bookId, borrowerId));
     }
