@@ -5,7 +5,8 @@ import com.examly.springapp.exception.*;
 import com.examly.springapp.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import com.examly.springapp.entity.Book;
+import com.examly.springapp.repository.BookRepository;
 import java.time.LocalDate;
 
 @Service
@@ -40,8 +41,7 @@ public class BorrowService {
         if (record.isReturned()) {
             throw new BusinessValidationException("Book already returned");
         }
-
-             record.setReturnDate(LocalDate.now());
+        record.setReturnDate(LocalDate.now());
         record.setReturned(true);
 
         Book book = record.getBook();
