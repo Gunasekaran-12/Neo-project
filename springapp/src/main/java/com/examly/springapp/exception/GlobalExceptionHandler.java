@@ -15,22 +15,21 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleNotFound(ResourceNotFoundException ex) {
         Map<String, String> error = new HashMap<>();
         error.put("message", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);  // 404 Not Found
     }
 
     @ExceptionHandler(BusinessValidationException.class)
-    public ResponseEntity<Map<String, String>> handleValidation(BusinessValidationException ex) {
+    public ResponseEntity<Map<String, String>> handleBusinessValidation(BusinessValidationException ex) {
         Map<String, String> error = new HashMap<>();
         error.put("message", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);  // 400 Bad Request
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidationErrors(MethodArgumentNotValidException ex) {
+    public ResponseEntity<Map<String, String>> handleValidationError(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getFieldErrors().forEach(err -> 
-            errors.put(err.getField(), err.getDefaultMessage())
-        );
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+        ex.getBindingResult().getFieldErrors().forEach(error ->
+                errors.put(error.getField(), error.getDefaultMessage()));  // Handle field validation errors
+        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);  // 400 Bad Request
     }
 }

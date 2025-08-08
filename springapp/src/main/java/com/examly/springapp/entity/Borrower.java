@@ -2,9 +2,11 @@ package com.examly.springapp.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import java.io.Serializable;
 
 @Entity
 public class Borrower {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -17,6 +19,7 @@ public class Borrower {
     private String email;
 
     @NotBlank(message = "Phone number is required")
+    @Pattern(regexp = "^[0-9]{10}$", message = "Phone number must be 10 digits")
     private String phone;
 
     // Getters and Setters

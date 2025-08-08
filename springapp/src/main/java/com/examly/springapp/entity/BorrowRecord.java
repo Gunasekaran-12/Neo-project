@@ -1,18 +1,25 @@
 package com.examly.springapp.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
+import jakarta.persistence.PrePersist;
 
 @Entity
 public class BorrowRecord {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne @JoinColumn(name = "book_id", nullable = false)
+    @ManyToOne 
+    @JoinColumn(name = "book_id", nullable = false)
+    @NotNull(message = "Book cannot be null")
     private Book book;
 
-    @ManyToOne @JoinColumn(name = "borrower_id", nullable = false)
+    @ManyToOne 
+    @JoinColumn(name = "borrower_id", nullable = false)
+    @NotNull(message = "Borrower cannot be null")
     private Borrower borrower;
 
     private LocalDate borrowDate;
@@ -29,62 +36,32 @@ public class BorrowRecord {
         this.returned = false;
     }
 
-    public Long getId() {
-        return id;
+    @PrePersist
+    public void setBorrowDate() {
+        if (this.borrowDate == null) {
+            this.borrowDate = LocalDate.now();  // Set current date if borrowDate is null
+        }
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    // Getters and Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public Book getBook() {
-        return book;
-    }
+    public Book getBook() { return book; }
+    public void setBook(Book book) { this.book = book; }
 
-    public void setBook(Book book) {
-        this.book = book;
-    }
+    public Borrower getBorrower() { return borrower; }
+    public void setBorrower(Borrower borrower) { this.borrower = borrower; }
 
-    public Borrower getBorrower() {
-        return borrower;
-    }
+    public LocalDate getBorrowDate() { return borrowDate; }
+    public void setBorrowDate(LocalDate borrowDate) { this.borrowDate = borrowDate; }
 
-    public void setBorrower(Borrower borrower) {
-        this.borrower = borrower;
-    }
+    public LocalDate getDueDate() { return dueDate; }
+    public void setDueDate(LocalDate dueDate) { this.dueDate = dueDate; }
 
-    public LocalDate getBorrowDate() {
-        return borrowDate;
-    }
+    public LocalDate getReturnDate() { return returnDate; }
+    public void setReturnDate(LocalDate returnDate) { this.returnDate = returnDate; }
 
-    public void setBorrowDate(LocalDate borrowDate) {
-        this.borrowDate = borrowDate;
-    }
-
-    public LocalDate getDueDate() {
-        return dueDate;
-    }
-
-    public void setDueDate(LocalDate dueDate) {
-        this.dueDate = dueDate;
-    }
-
-    public LocalDate getReturnDate() {
-        return returnDate;
-    }
-
-    public void setReturnDate(LocalDate returnDate) {
-        this.returnDate = returnDate;
-    }
-
-    public boolean isReturned() {
-        return returned;
-    }
-
-    public void setReturned(boolean returned) {
-        this.returned = returned;
-    }
-
-    // Getters and Setters...
-    
+    public boolean isReturned() { return returned; }
+    public void setReturned(boolean returned) { this.returned = returned; }
 }
