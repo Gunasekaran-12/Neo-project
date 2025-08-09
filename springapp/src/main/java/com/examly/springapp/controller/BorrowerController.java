@@ -8,6 +8,7 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,19 +38,15 @@ public class BorrowerController {
         logger.info("Attempting to fetch borrower with ID: {}", id);
 
         return borrowerService.getBorrowerById(id)
-            .map(borrower -> {
+            .<ResponseEntity<Object>>map(borrower -> {
                 logger.info("Borrower found with ID: {}", id);
-                return ResponseEntity.ok(borrower);  // Return borrower if found
+                return ResponseEntity.ok(borrower); // returning borrower as Object
             })
             .orElseGet(() -> {
                 logger.warn("Borrower with ID {} not found", id);
-
-                // Create response map for error using Map<String, Object> (to increase flexibility)
                 Map<String, Object> response = new HashMap<>();
                 response.put("message", "Borrower not found");
-
-                // Return error response with a Map as the body
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response); // returning error map
             });
     }
 }
