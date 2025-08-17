@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import * as api from "../utils/api";
+import { fetchBooks, fetchBorrowers, borrowBook } from "../utils/api";
 
 const BorrowBook = () => {
   const [books, setBooks] = useState([]);
@@ -10,36 +10,36 @@ const BorrowBook = () => {
 
   useEffect(() => {
     const loadData = async () => {
-      const booksRes = await api.fetchBooks();
-      const borrowersRes = await api.fetchBorrowers();
+      const booksRes = await fetchBooks();
       setBooks(booksRes.data);
+      const borrowersRes = await fetchBorrowers();
       setBorrowers(borrowersRes.data);
     };
     loadData();
   }, []);
 
-  const handleBorrow = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     if (!selectedBook || !selectedBorrower) {
-      setError("Please select both a book and a borrower.");
+      setError("Please select both");
       return;
     }
     setError("");
-    await api.borrowBook(selectedBook, selectedBorrower);
+    await borrowBook(selectedBook, selectedBorrower);
   };
 
   return (
-    <div>
+    <form onSubmit={handleSubmit}>
       <label htmlFor="book">Select Book</label>
       <select
         id="book"
-        aria-label="Select Book"
         value={selectedBook}
         onChange={(e) => setSelectedBook(e.target.value)}
       >
-        <option value="">-- Select --</option>
-        {books.map((b) => (
-          <option key={b.id} value={b.id}>
-            {b.title} ({b.author})
+        <option value="">-- Select a book --</option>
+        {books.map((book) => (
+          <option key={book.id} value={book.id}>
+            {book.title}
           </option>
         ))}
       </select>
@@ -47,22 +47,20 @@ const BorrowBook = () => {
       <label htmlFor="borrower">Select Borrower</label>
       <select
         id="borrower"
-        aria-label="Select Borrower"
         value={selectedBorrower}
         onChange={(e) => setSelectedBorrower(e.target.value)}
       >
-        <option value="">-- Select --</option>
-        {borrowers.map((br) => (
-          <option key={br.id} value={br.id}>
-            {br.name} ({br.email})
+        <option value="">-- Select a borrower --</option>
+        {borrowers.map((b) => (
+          <option key={b.id} value={b.id}>
+            {b.name}
           </option>
         ))}
       </select>
 
-      <button onClick={handleBorrow}>Borrow</button>
-
+      <button type="submit">Borrow</button>
       {error && <p>[Error - You need to specify the message]</p>}
-    </div>
+    </form>
   );
 };
 
