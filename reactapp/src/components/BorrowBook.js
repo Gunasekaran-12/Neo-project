@@ -1,4 +1,3 @@
-// components/BorrowBook.js
 import React, { useEffect, useState } from "react";
 import * as api from "../utils/api";
 
@@ -10,61 +9,52 @@ const BorrowBook = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const load = async () => {
-      try {
-        const b = await api.fetchBooks();
-        setBooks(b.data || []);
-        const br = await api.fetchBorrowers();
-        setBorrowers(br.data || []);
-      } catch (err) {
-        console.error("Error loading dropdowns", err);
-      }
+    const loadData = async () => {
+      const booksRes = await api.fetchBooks();
+      const borrowersRes = await api.fetchBorrowers();
+      setBooks(booksRes.data);
+      setBorrowers(borrowersRes.data);
     };
-    load();
+    loadData();
   }, []);
 
   const handleBorrow = async () => {
     if (!selectedBook || !selectedBorrower) {
-      setError("Please select both");
+      setError("Please select both a book and a borrower.");
       return;
     }
     setError("");
-    try {
-      await api.borrowBook({
-        bookId: parseInt(selectedBook),
-        borrowerId: parseInt(selectedBorrower),
-      });
-    } catch (err) {
-      console.error("Failed to borrow book", err);
-    }
+    await api.borrowBook(selectedBook, selectedBorrower);
   };
 
   return (
     <div>
-      <label htmlFor="bookSelect">Select Book</label>
+      <label htmlFor="book">Select Book</label>
       <select
-        id="bookSelect"
+        id="book"
+        aria-label="Select Book"
         value={selectedBook}
         onChange={(e) => setSelectedBook(e.target.value)}
       >
         <option value="">-- Select --</option>
         {books.map((b) => (
           <option key={b.id} value={b.id}>
-            {b.title}
+            {b.title} ({b.author})
           </option>
         ))}
       </select>
 
-      <label htmlFor="borrowerSelect">Select Borrower</label>
+      <label htmlFor="borrower">Select Borrower</label>
       <select
-        id="borrowerSelect"
+        id="borrower"
+        aria-label="Select Borrower"
         value={selectedBorrower}
         onChange={(e) => setSelectedBorrower(e.target.value)}
       >
         <option value="">-- Select --</option>
         {borrowers.map((br) => (
           <option key={br.id} value={br.id}>
-            {br.name}
+            {br.name} ({br.email})
           </option>
         ))}
       </select>
