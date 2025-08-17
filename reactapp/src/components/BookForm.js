@@ -1,31 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import * as api from "../utils/api";
+import { addBook, updateBook, getBook } from "../utils/api";
 
 const BookForm = () => {
-  const [book, setBook] = useState({
-    title: "",
-    author: "",
-    isbn: "",
-    publicationYear: ""
-  });
+  const [form, setForm] = useState({ title: "", author: "", isbn: "", publicationYear: "" });
   const [errors, setErrors] = useState({});
-  const navigate = useNavigate();
   const { id } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (id) {
-      api.getBook(id).then(res => setBook(res.data));
+      getBook(id).then((res) => setForm(res.data));
     }
   }, [id]);
 
   const validate = () => {
-    const errs = {};
-    if (!book.title) errs.title = "Title is required";
-    if (!book.author) errs.author = "Author is required";
-    if (!book.isbn) errs.isbn = "ISBN is required";
-    else if (book.isbn.length !== 13) errs.isbn = "ISBN must be exactly 13 characters";
-    if (!book.publicationYear) errs.publicationYear = "Publication Year is required";
+    let errs = {};
+    if (!form.title) errs.title = "Title is required";
+    if (!form.author) errs.author = "Author is required";
+    if (!form.isbn) errs.isbn = "ISBN is required";
+    else if (form.isbn.length !== 13) errs.isbn = "ISBN must be exactly 13 characters";
+    if (!form.publicationYear) errs.publicationYear = "Publication Year is required";
     return errs;
   };
 
@@ -36,36 +31,38 @@ const BookForm = () => {
       setErrors(errs);
       return;
     }
-    if (id) await api.updateBook(id, book);
-    else await api.addBook(book);
+    if (id) await updateBook(id, form);
+    else await addBook(form);
     navigate("/books");
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <div>
-        <label htmlFor="title">Title</label>
-        <input id="title" value={book.title} onChange={e => setBook({ ...book, title: e.target.value })} />
+        <label>Title</label>
+        <input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
         {errors.title && <p>{errors.title}</p>}
       </div>
       <div>
-        <label htmlFor="author">Author</label>
-        <input id="author" value={book.author} onChange={e => setBook({ ...book, author: e.target.value })} />
+        <label>Author</label>
+        <input value={form.author} onChange={(e) => setForm({ ...form, author: e.target.value })} />
         {errors.author && <p>{errors.author}</p>}
       </div>
       <div>
-        <label htmlFor="isbn">ISBN</label>
-        <input id="isbn" value={book.isbn} onChange={e => setBook({ ...book, isbn: e.target.value })} />
+        <label>ISBN</label>
+        <input value={form.isbn} onChange={(e) => setForm({ ...form, isbn: e.target.value })} />
         {errors.isbn && <p>{errors.isbn}</p>}
       </div>
       <div>
-        <label htmlFor="year">Publication Year</label>
-        <input id="year" value={book.publicationYear} onChange={e => setBook({ ...book, publicationYear: e.target.value })} />
+        <label>Publication Year</label>
+        <input
+          value={form.publicationYear}
+          onChange={(e) => setForm({ ...form, publicationYear: e.target.value })}
+        />
         {errors.publicationYear && <p>{errors.publicationYear}</p>}
       </div>
       <button type="submit">Save</button>
     </form>
   );
 };
-
 export default BookForm;
