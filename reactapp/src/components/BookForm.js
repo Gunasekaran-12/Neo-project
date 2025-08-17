@@ -44,23 +44,23 @@ const BookForm = () => {
   return (
     <form onSubmit={handleSubmit}>
       <div>
-        <label>Title</label>
-        <input value={book.title} onChange={e => setBook({ ...book, title: e.target.value })} />
+        <label htmlFor="title">Title</label>
+        <input id="title" value={book.title} onChange={e => setBook({ ...book, title: e.target.value })} />
         {errors.title && <p>{errors.title}</p>}
       </div>
       <div>
-        <label>Author</label>
-        <input value={book.author} onChange={e => setBook({ ...book, author: e.target.value })} />
+        <label htmlFor="author">Author</label>
+        <input id="author" value={book.author} onChange={e => setBook({ ...book, author: e.target.value })} />
         {errors.author && <p>{errors.author}</p>}
       </div>
       <div>
-        <label>ISBN</label>
-        <input value={book.isbn} onChange={e => setBook({ ...book, isbn: e.target.value })} />
+        <label htmlFor="isbn">ISBN</label>
+        <input id="isbn" value={book.isbn} onChange={e => setBook({ ...book, isbn: e.target.value })} />
         {errors.isbn && <p>{errors.isbn}</p>}
       </div>
       <div>
-        <label>Publication Year</label>
-        <input value={book.publicationYear} onChange={e => setBook({ ...book, publicationYear: e.target.value })} />
+        <label htmlFor="year">Publication Year</label>
+        <input id="year" value={book.publicationYear} onChange={e => setBook({ ...book, publicationYear: e.target.value })} />
         {errors.publicationYear && <p>{errors.publicationYear}</p>}
       </div>
       <button type="submit">Save</button>

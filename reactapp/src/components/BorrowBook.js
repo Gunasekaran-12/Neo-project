@@ -15,7 +15,7 @@ const BorrowBook = () => {
 
   const handleBorrow = async () => {
     if (!selectedBook || !selectedBorrower) {
-      setError("Please select both book and borrower");
+      setError("Please select both");
       return;
     }
     await api.borrowBook(selectedBook, selectedBorrower);
@@ -24,16 +24,16 @@ const BorrowBook = () => {
 
   return (
     <div>
-      <label>Select Book</label>
-      <select value={selectedBook} onChange={e => setSelectedBook(e.target.value)}>
+      <label htmlFor="book">Select Book</label>
+      <select id="book" value={selectedBook} onChange={e => setSelectedBook(e.target.value)}>
         <option value="">--Choose--</option>
         {books.map(b => (
           <option key={b.id} value={b.id}>{b.title}</option>
         ))}
       </select>
 
-      <label>Select Borrower</label>
-      <select value={selectedBorrower} onChange={e => setSelectedBorrower(e.target.value)}>
+      <label htmlFor="borrower">Select Borrower</label>
+      <select id="borrower" value={selectedBorrower} onChange={e => setSelectedBorrower(e.target.value)}>
         <option value="">--Choose--</option>
         {borrowers.map(br => (
           <option key={br.id} value={br.id}>{br.name}</option>

@@ -7,20 +7,20 @@ const BookList = () => {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
 
-  const loadBooks = async () => {
+  const loadBooks = async (query = "") => {
     setLoading(true);
-    const res = await api.fetchBooks(search);
+    const res = await api.fetchBooks(query);
     setBooks(res.data);
     setLoading(false);
   };
 
   useEffect(() => {
-    loadBooks();
+    loadBooks(search);
   }, [search]);
 
   const handleDelete = async (id) => {
     await api.deleteBook(id);
-    loadBooks();
+    loadBooks(search);
   };
 
   if (loading) return <p>Loading books...</p>;
