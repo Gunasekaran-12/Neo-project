@@ -1,22 +1,82 @@
-import axios from "axios";
+const API_BASE_URL = 'http://localhost:3001/api';
 
-const API_URL = "http://localhost:8081/api";
+export const fetchBooks = async () => {
+  const response = await fetch(`${API_BASE_URL}/books`);
+  if (!response.ok) throw new Error('Failed to fetch books');
+  return { data: await response.json() };
+};
 
-// Books
-export const fetchBooks = () => axios.get(`${API_URL}/books`);
-export const getBook = (id) => axios.get(`${API_URL}/books/${id}`);
-export const addBook = (book) => axios.post(`${API_URL}/books`, book);
-export const updateBook = (id, book) => axios.put(`${API_URL}/books/${id}`, book);
-export const deleteBook = (id) => axios.delete(`${API_URL}/books/${id}`);
+export const addBook = async (bookData) => {
+  const response = await fetch(`${API_BASE_URL}/books`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(bookData),
+  });
+  if (!response.ok) throw new Error('Failed to add book');
+  return await response.json();
+};
 
-// Borrowers
-export const fetchBorrowers = () => axios.get(`${API_URL}/borrowers`);
-export const getBorrower = (id) => axios.get(`${API_URL}/borrowers/${id}`);
-export const addBorrower = (b) => axios.post(`${API_URL}/borrowers`, b);
-export const updateBorrower = (id, b) => axios.put(`${API_URL}/borrowers/${id}`, b);
+export const updateBook = async (id, bookData) => {
+  const response = await fetch(`${API_BASE_URL}/books/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(bookData),
+  });
+  if (!response.ok) throw new Error('Failed to update book');
+  return await response.json();
+};
 
-// Borrows
-export const borrowBook = (data) => axios.post(`${API_URL}/borrows/borrow`, data);
-export const returnBook = (borrowId) => axios.post(`${API_URL}/borrows/return/${borrowId}`);
-export const getActiveBorrowsByBorrower = (id) =>
-  axios.get(`${API_URL}/borrows/borrower/${id}`);
+export const getBook = async (id) => {
+  const response = await fetch(`${API_BASE_URL}/books/${id}`);
+  if (!response.ok) throw new Error('Failed to fetch book');
+  return { data: await response.json() };
+};
+
+export const deleteBook = async (id) => {
+  const response = await fetch(`${API_BASE_URL}/books/${id}`, {
+    method: 'DELETE',
+  });
+  if (!response.ok) throw new Error('Failed to delete book');
+  return {};
+};
+
+export const fetchBorrowers = async () => {
+  const response = await fetch(`${API_BASE_URL}/borrowers`);
+  if (!response.ok) throw new Error('Failed to fetch borrowers');
+  return { data: await response.json() };
+};
+
+export const addBorrower = async (borrowerData) => {
+  const response = await fetch(`${API_BASE_URL}/borrowers`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(borrowerData),
+  });
+  if (!response.ok) throw new Error('Failed to add borrower');
+  return await response.json();
+};
+
+export const getActiveBorrowsByBorrower = async (borrowerId) => {
+  const response = await fetch(`${API_BASE_URL}/borrowers/${borrowerId}/borrows`);
+  if (!response.ok) throw new Error('Failed to fetch active borrows');
+  return { data: await response.json() };
+};
+
+export const borrowBook = async (borrowData) => {
+  const response = await fetch(`${API_BASE_URL}/borrows`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(borrowData),
+  });
+  if (!response.ok) throw new Error('Failed to borrow book');
+  return {};
+};
+
+
+export const returnBook = async (borrowId) => {
+  const response = await fetch(`${API_BASE_URL}/borrows/${borrowId}/return`, {
+    method: 'PUT',
+  });
+  if (!response.ok) throw new Error('Failed to return book');
+  return {};
+};

@@ -1,3 +1,4 @@
+// BusinessValidationException.java
 package com.examly.springapp.exception;
 
 public class BusinessValidationException extends RuntimeException {

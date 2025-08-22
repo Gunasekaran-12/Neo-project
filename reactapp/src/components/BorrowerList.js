@@ -1,49 +1,87 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { fetchBorrowers } from "../utils/api";
+import React, { useState, useEffect } from 'react';
+import { fetchBorrowers } from '../utils/api';
+import BorrowerBorrows from './BorrowerBorrows';
 
 const BorrowerList = () => {
   const [borrowers, setBorrowers] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  const load = async () => {
-    setLoading(true);
-    const res = await fetchBorrowers();
-    setBorrowers(res.data || []);
-    setLoading(false);
-  };
+  const [error, setError] = useState(null);
+  const [selectedBorrowerId, setSelectedBorrowerId] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    load();
+    const loadBorrowers = async () => {
+      try {
+        const data = await fetchBorrowers();
+        setBorrowers(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadBorrowers();
   }, []);
 
-  if (loading) return <p>Loading borrowers...</p>;
-  if (!borrowers.length) return <p>No borrowers found</p>;
+  const filteredBorrowers = borrowers.filter(borrower => 
+    borrower.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    borrower.email.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  if (loading) return <div>Loading borrowers...</div>;
+  if (error) return <div>Error: [Error - You need to specify the message]</div>;
 
   return (
-    <div>
-      <h2>Borrowers</h2>
-      <Link to="/borrowers/add">Add New Borrower</Link>
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th><th>Email</th><th>Phone</th><th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {borrowers.map((b) => (
-            <tr key={b.id}>
-              <td>{b.name}</td>
-              <td>{b.email}</td>
-              <td>{b.phoneNumber}</td>
-              <td>
-                <Link to={`/borrowers/edit/${b.id}`}>Edit</Link>{" "}
-                <Link to={`/borrowers/${b.id}/borrows`}>View Borrows</Link>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="borrower-list">
+      <div className="controls">
+        <input
+          type="text"
+          placeholder="Search borrowers..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
+
+      <div className="borrower-container">
+        <div className="borrower-table">
+          {filteredBorrowers.length === 0 ? (
+            <div className="empty-state">No borrowers found</div>
+          ) : (
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredBorrowers.map(borrower => (
+                  <tr 
+                    key={borrower.id} 
+                    className={selectedBorrowerId === borrower.id ? 'selected' : ''}
+                    onClick={() => setSelectedBorrowerId(borrower.id)}
+                  >
+                    <td>{borrower.name}</td>
+                    <td>{borrower.email}</td>
+                    <td>{borrower.phone || '-'}</td>
+                    <td>
+                      <button onClick={() => setSelectedBorrowerId(borrower.id)}>
+                        View Borrows
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+
+        <div className="borrower-details">
+          <BorrowerBorrows borrowerId={selectedBorrowerId} />
+        </div>
+      </div>
     </div>
   );
 };

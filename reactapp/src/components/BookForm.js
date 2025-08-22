@@ -1,33 +1,27 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import * as api from "../utils/api"; // ✅ matches your test mock path
+import React, { useState } from 'react';
+import * as api from '../utils/api';
 
-function BookForm() {
-  const [form, setForm] = useState({
-    title: "",
-    author: "",
-    isbn: "",
-    publicationYear: "",
+const BookForm = () => {
+  const [formData, setFormData] = useState({
+    title: '',
+    author: '',
+    isbn: '',
+    publicationYear: ''
   });
-
   const [errors, setErrors] = useState({});
-  const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // ✅ Validation logic to satisfy tests
   const validate = () => {
     const newErrors = {};
-
-    if (!form.title) newErrors.title = "Title is required";
-    if (!form.author) newErrors.author = "Author is required";
-
-    if (!form.isbn) {
-      newErrors.isbn = "ISBN is required";
-    } else if (form.isbn.length !== 13) {
-      newErrors.isbn = "ISBN must be exactly 13 characters";
+    if (!formData.title.trim()) newErrors.title = 'Title is required';
+    if (!formData.author.trim()) newErrors.author = 'Author is required';
+    if (!formData.isbn.trim()) {
+      newErrors.isbn = 'ISBN is required';
+    } else if (formData.isbn.length !== 13) {
+      newErrors.isbn = 'ISBN must be exactly 13 characters';
     }
-
-    if (!form.publicationYear) {
-      newErrors.publicationYear = "Publication Year is required";
+    if (!formData.publicationYear) {
+      newErrors.publicationYear = 'Publication Year is required';
     }
 
     setErrors(newErrors);
@@ -35,71 +29,102 @@ function BookForm() {
   };
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validate()) {
-      try {
-        await api.addBook(form); // ✅ matches test expectation
-        navigate("/"); // redirect after saving
-      } catch (err) {
-        console.error("Error adding book:", err);
-      }
+    if (!validate()) return;
+
+    setIsSubmitting(true);
+    try {
+      await api.addBook({
+        ...formData,
+        publicationYear: parseInt(formData.publicationYear)
+      });
+      setFormData({
+        title: '',
+        author: '',
+        isbn: '',
+        publicationYear: ''
+      });
+      setErrors({});
+    } catch (error) {
+      setErrors({ submit: error.message });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor="title">Title</label>
+    <form onSubmit={handleSubmit} className="book-form">
+      <h2>Add New Book</h2>
+      
+      <div className="form-group">
+        <label htmlFor="title-input">Title:</label>
         <input
-          id="title"
+          id="title-input"
+          type="text"
           name="title"
-          value={form.title}
+          value={formData.title}
           onChange={handleChange}
+          data-testid="title-input"
         />
-        {errors.title && <p>{errors.title}</p>}
+        {errors.title && <div className="error-message" data-testid="title-error">{errors.title}</div>}
       </div>
-
-      <div>
-        <label htmlFor="author">Author</label>
+      
+      <div className="form-group">
+        <label htmlFor="author-input">Author:</label>
         <input
-          id="author"
+          id="author-input"
+          type="text"
           name="author"
-          value={form.author}
+          value={formData.author}
           onChange={handleChange}
+          data-testid="author-input"
         />
-        {errors.author && <p>{errors.author}</p>}
+        {errors.author && <div className="error-message" data-testid="author-error">{errors.author}</div>}
       </div>
+      
 
-      <div>
-        <label htmlFor="isbn">ISBN</label>
+      <div className="form-group">
+        <label htmlFor="isbn-input">ISBN:</label>
         <input
-          id="isbn"
+          id="isbn-input"
+          type="text"
           name="isbn"
-          value={form.isbn}
+          value={formData.isbn}
           onChange={handleChange}
+          data-testid="isbn-input"
         />
-        {errors.isbn && <p>{errors.isbn}</p>}
+        {errors.isbn && <div className="error-message" data-testid="isbn-error">{errors.isbn}</div>}
       </div>
-
- 
-<div>
-<label htmlFor="publicationYear">Publication Year</label>
-<input
-id="publicationYear"
-name="publicationYear"
-value={form.publicationYear}
-onChange={handleChange}
-/>
-{errors.publicationYear && <p>{errors.publicationYear}</p>}
-</div>
-
-<button type="submit">Save</button>
-</form>
-);
-}
+      
+      <div className="form-group">
+        <label htmlFor="year-input">Publication Year:</label>
+        <input
+          id="year-input"
+          type="number"
+          name="publicationYear"
+          value={formData.publicationYear}
+          onChange={handleChange}
+          data-testid="year-input"
+        />
+        {errors.publicationYear && (
+          <div className="error-message" data-testid="year-error">{errors.publicationYear}</div>
+        )}
+      </div>
+      
+      <button 
+        type="submit" 
+        disabled={isSubmitting}
+        data-testid="submit-button"
+      >
+        {isSubmitting ? 'Saving...' : 'Save'}
+      </button>
+    </form>
+  );
+};
 
 export default BookForm;

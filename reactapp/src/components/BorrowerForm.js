@@ -1,76 +1,108 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { addBorrower, updateBorrower, getBorrower } from "../utils/api";
+import React, { useState } from 'react';
+import { addBorrower } from '../utils/api';
 
-const BorrowerForm = () => {
-  const [form, setForm] = useState({ name: "", email: "", phoneNumber: "" });
+const BorrowerForm = ({ onBorrowerAdded }) => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+  });
   const [errors, setErrors] = useState({});
-  const { id } = useParams();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (id) {
-      getBorrower(id).then((res) => setForm(res.data));
-    }
-  }, [id]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const validate = () => {
-    const e = {};
-    if (!form.name) e.name = "Name is required";
-    else if (form.name.length > 50) e.name = "Name must be at most 50 characters";
+    const newErrors = {};
+    if (!formData.name.trim()) newErrors.name = 'Name is required';
+    
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Invalid email format';
+    }
+    
+    if (formData.phone && !/^\d{10}$/.test(formData.phone)) {
+      newErrors.phone = 'Phone must be 10 digits';
+    }
 
-    if (!form.email) e.email = "Email is required";
-    else if (!/^\S+@\S+\.\S+$/.test(form.email)) e.email = "Invalid email";
-
-    if (!form.phoneNumber) e.phoneNumber = "Phone is required";
-    else if (!/^\d{10}$/.test(form.phoneNumber))
-      e.phoneNumber = "Phone must be exactly 10 digits";
-
-    return e;
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (evt) => {
-    evt.preventDefault();
-    const e = validate();
-    if (Object.keys(e).length) {
-      setErrors(e);
-      return;
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validate()) return;
+
+    setIsSubmitting(true);
+    try {
+      const newBorrower = await addBorrower(formData);
+      onBorrowerAdded(newBorrower);
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+      });
+      setErrors({});
+    } catch (error) {
+      console.error('Error adding borrower:', error);
+      setErrors({ submit: error.message });
+    } finally {
+      setIsSubmitting(false);
     }
-    if (id) await updateBorrower(id, form);
-    else await addBorrower(form);
-    navigate("/borrowers");
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label>Name</label>
+    <form onSubmit={handleSubmit} className="borrower-form">
+      <h2>Add New Borrower</h2>
+      {errors.submit && <div className="error-message">{errors.submit}</div>}
+      
+      <div className="form-group">
+        <label>Name:</label>
         <input
-          value={form.name}
-          onChange={(ev) => setForm({ ...form, name: ev.target.value })}
+          type="text"
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+          className={errors.name ? 'error' : ''}
         />
-        {errors.name && <p>{errors.name}</p>}
+        {errors.name && <span className="error-message">{errors.name}</span>}
       </div>
-
-      <div>
-        <label>Email</label>
+      
+      <div className="form-group">
+        <label>Email:</label>
         <input
-          value={form.email}
-          onChange={(ev) => setForm({ ...form, email: ev.target.value })}
+          type="email"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+          className={errors.email ? 'error' : ''}
         />
-        {errors.email && <p>{errors.email}</p>}
+        {errors.email && <span className="error-message">{errors.email}</span>}
       </div>
-
-      <div>
-        <label>Phone</label>
+      
+      <div className="form-group">
+        <label>Phone (optional):</label>
         <input
-          value={form.phoneNumber}
-          onChange={(ev) => setForm({ ...form, phoneNumber: ev.target.value })}
+          type="tel"
+          name="phone"
+          value={formData.phone}
+          onChange={handleChange}
+          placeholder="1234567890"
+          className={errors.phone ? 'error' : ''}
         />
-        {errors.phoneNumber && <p>{errors.phoneNumber}</p>}
+        {errors.phone && <span className="error-message">{errors.phone}</span>}
       </div>
-
-      <button type="submit">Save</button>
+      
+      <button type="submit" disabled={isSubmitting}>
+        {isSubmitting ? 'Adding...' : 'Add Borrower'}
+      </button>
     </form>
   );
 };

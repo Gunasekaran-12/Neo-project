@@ -1,67 +1,106 @@
 package com.examly.springapp.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
-import jakarta.persistence.PrePersist;
 
 @Entity
 public class BorrowRecord {
-
-    @Id
+    @Id 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne 
+    
+    @ManyToOne
     @JoinColumn(name = "book_id", nullable = false)
-    @NotNull(message = "Book cannot be null")
     private Book book;
-
-    @ManyToOne 
+    
+    @ManyToOne
     @JoinColumn(name = "borrower_id", nullable = false)
-    @NotNull(message = "Borrower cannot be null")
     private Borrower borrower;
-
-    private LocalDate borrowDate;
+    
+    private LocalDate borrowDate = LocalDate.now();
     private LocalDate dueDate;
     private LocalDate returnDate;
-    private boolean returned;
-
+    private String status = "ACTIVE"; // ACTIVE, RETURNED, OVERDUE, LOST
+    
+    // Constructors
     public BorrowRecord() {}
 
-    public BorrowRecord(Book book, Borrower borrower, LocalDate borrowDate) {
+    public BorrowRecord(Book book, Borrower borrower, LocalDate dueDate) {
         this.book = book;
         this.borrower = borrower;
-        this.borrowDate = borrowDate;
-        this.returned = false;
-    }
-
-    @PrePersist
-    public void setBorrowDate() {
-        if (this.borrowDate == null) {
-            this.borrowDate = LocalDate.now();  // Set current date if borrowDate is null
-        }
+        this.dueDate = dueDate;
     }
 
     // Getters and Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public Book getBook() { return book; }
-    public void setBook(Book book) { this.book = book; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public Borrower getBorrower() { return borrower; }
-    public void setBorrower(Borrower borrower) { this.borrower = borrower; }
+    public Book getBook() {
+        return book;
+    }
 
-    public LocalDate getBorrowDate() { return borrowDate; }
-    public void setBorrowDate(LocalDate borrowDate) { this.borrowDate = borrowDate; }
+    public void setBook(Book book) {
+        this.book = book;
+    }
 
-    public LocalDate getDueDate() { return dueDate; }
-    public void setDueDate(LocalDate dueDate) { this.dueDate = dueDate; }
+    public Borrower getBorrower() {
+        return borrower;
+    }
 
-    public LocalDate getReturnDate() { return returnDate; }
-    public void setReturnDate(LocalDate returnDate) { this.returnDate = returnDate; }
+    public void setBorrower(Borrower borrower) {
+        this.borrower = borrower;
+    }
 
-    public boolean isReturned() { return returned; }
-    public void setReturned(boolean returned) { this.returned = returned; }
+    public LocalDate getBorrowDate() {
+        return borrowDate;
+    }
+
+    public void setBorrowDate(LocalDate borrowDate) {
+        this.borrowDate = borrowDate;
+    }
+
+    public LocalDate getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(LocalDate dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    public LocalDate getReturnDate() {
+        return returnDate;
+    }
+
+    public void setReturnDate(LocalDate returnDate) {
+        this.returnDate = returnDate;
+        if (returnDate != null) {
+            this.status = "RETURNED";
+        }
+    }
+
+    public String getStatus() {
+        // Update status if book is overdue and not yet returned
+        if ("ACTIVE".equals(status) && LocalDate.now().isAfter(dueDate) && returnDate == null) {
+            status = "OVERDUE";
+        }
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    // Business logic methods
+    public boolean isActive() {
+        return "ACTIVE".equals(status);
+    }
+
+    public boolean isOverdue() {
+        return LocalDate.now().isAfter(dueDate) && returnDate == null;
+    }
 }
